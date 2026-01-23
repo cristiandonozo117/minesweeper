@@ -6,13 +6,14 @@ export class Box {
         this.is_mine = is_mine
         this.revealed = false
         this.flag = false
-        //this.nearby_mines = 0
+        this.nearby_mines = null
     }
 
     reveal() {
         if (!this.flag){
             this.revealed = true
         }
+        return this.revealed
     }
 
     switch_flag() {
@@ -21,10 +22,3 @@ export class Box {
         }
     }
 }
-
-// const my_box = new Box(true)
-// console.log(my_box)
-// my_box.reveal()
-// my_box.switch_flag()
-// console.log(my_box)
-

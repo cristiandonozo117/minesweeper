@@ -4,10 +4,13 @@ export class GameBoard {
     #rows
     #cols
     #board
+    #totalMines
     constructor(rows, cols){
         this.#rows = rows
         this.#cols = cols
-        this.#board = this.#createBoard(0.5)
+        //this.#totalMines = totalMines
+        this.#totalMines = 0
+        this.#board = this.#createBoard()
     }
 
     getShape(){
@@ -15,25 +18,87 @@ export class GameBoard {
     }
 
     get board(){
+        // Return a copy just for testing it
         return [...this.#board]
     }
 
-    #createBoard(prob){
+    // #createBoardv2(){
+    //     if (this.#totalMines > this.#rows*this.#cols){
+    //         throw Error('Number of mines must be less than total number of cells.')
+    //     }
+    //     const board = []
+    //     const randomIndex = []
+    //     // Genero aleatoriamente los índices que tendrán minas 
+    //     while (randomIndex.length < this.#totalMines){
+    //         let rand_i = getRandomIntInclusive(0, this.#rows - 1)
+    //         let rand_j = getRandomIntInclusive(0, this.#cols - 1)
+    //         if (!randomIndex.find(index => index[0]==rand_i & index[1]==rand_j)){
+    //             randomIndex.push([rand_i, rand_j])
+    //         }
+    //     }
+    //     // Generamos la tabla
+    //     let row, box, isMine
+    //     for (let i = 0; i < this.#rows; i++){
+    //         row = []
+    //         for (let j = 0; j < this.#cols; j++){
+    //             isMine = false
+    //             // Si toca combinacion de indices de una mina
+    //             //if (randomIndex.includes([i, j])){
+    //             if (randomIndex.find(index => index[0]==i & index[1]==j)){
+    //                 isMine = true
+    //             }
+    //             box = new Box(isMine)
+    //             row.push(box)
+    //         }
+    //         board.push(row)
+    //     }
+    //     return board
+    // }
+
+    #createBoard(){
         const board = []
-        let box, isMine
+        let row, box
         for (let i=0; i<this.#rows; i++){
-            let i = []
+            row = []
             for (let j=0; j<this.#cols; j++){
-                isMine = false
-                if (Math.random() > prob){
-                    isMine = true
-                }
-                box = new Box(isMine)
-                i.push(box)
+                box = new Box(false)
+                row.push(box)
             }
-            board.push(i)
+            board.push(row)
         }
         return board
+    }
+
+    setMineIn(i, j){
+        if (!((i >= 0 && i < this.#rows) && (j >= 0 && j < this.#cols))){
+            throw Error(`Index out of range: [${i}, ${j}]`)
+        }
+        const box = this.#board[i][j]
+        if (!box.is_mine){
+            box.is_mine = true
+            this.#totalMines++
+        }
+    }
+
+    setRandomMines(totalMines){
+        // Validación
+        if ((totalMines > this.#rows * this.#cols) || totalMines < 0){
+            throw Error('Number of mines must be less than total number of cells.')
+        }
+        const randomIndex = []
+        // Genero aleatoriamente los índices que tendrán minas 
+        while (randomIndex.length < totalMines){
+            let rand_i = getRandomIntInclusive(0, this.#rows - 1)
+            let rand_j = getRandomIntInclusive(0, this.#cols - 1)
+            if (!randomIndex.find(index => index[0]==rand_i && index[1]==rand_j)){
+                randomIndex.push([rand_i, rand_j])
+                this.setMineIn(rand_i, rand_j)
+            }
+        }
+    }
+
+    get totalMines(){
+        return this.#totalMines
     }
 
     revealBox(i, j){
@@ -41,26 +106,32 @@ export class GameBoard {
             throw Error(`Index out of range: [${i}, ${j}]`)
         }
         let box = this.#board[i][j]
-        box.reveal()
-        if (!box.is_mine){
-            // Check neighboring cells for counting bombs
-            let sideCells = this.getNeighbours(i, j)
-            let bombsCount = 0
-            // for (let k = 0; k<=sideCells.length; k++){
-            //     if (sideCells[k].is_mine){
-            //         bombsCount++
-            //     }
-            // }
-            sideCells.forEach( cell => {
-                if(cell.is_mine)
-                    {bombsCount++}
-            })
-            // Recursion
-            if (bombsCount == 0){
-                sideCells.forEach( cell  => this.revealBox(...cell.position))
+        if (box.reveal()){
+            if (!box.is_mine){
+                // Check neighboring cells for counting bombs
+                let sideCells = this.getNeighbours(i, j)
+                // Nos quedamos con aquellas aún no reveladas. Necesario para limitar la recursión
+                sideCells = sideCells.filter( box => !box.revealed)
+                //let bombsCount = 0 // Cambiar por un atributo de una mina
+                // for (let k = 0; k<=sideCells.length; k++){
+                //     if (sideCells[k].is_mine){
+                //         bombsCount++
+                //     }
+                // }
+                box.nearby_mines = 0
+                sideCells.forEach( cell => {
+                    if(cell.is_mine){
+                        box.nearby_mines++
+                    }
+                })
+                // Recursion, si no hay minas cercanas
+                if (box.nearby_mines == 0){
+                    sideCells.forEach( cell  => this.revealBox(...cell.position))
+                }
+            }else{
+                // Lose Game
+                throw Error('Bomba, perdiste el juego...')
             }
-        }else{
-            // Lose Game
         }
     }
 
@@ -92,7 +163,9 @@ export class GameBoard {
     }
 }
 
-// const myBoard = new GameBoard(8, 8)
-// console.log(myBoard)
-// myBoard.revealBox(1, 1)
-// myBoard.showBoard()
+function getRandomIntInclusive(min, max) {
+    // Get a random number from [min; max]
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
