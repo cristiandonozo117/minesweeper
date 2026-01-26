@@ -95,8 +95,10 @@ describe('Test Game Board', () => {
             const boxToReveal = [minePosition[0]+1, minePosition[1]+1]
             const gameBoard = new GameBoard(5, 5)
             gameBoard.setMineIn(...minePosition)
+            expect(gameBoard.getBoxIn(...boxToReveal).revealed).toBeFalsy()
             gameBoard.revealBox(...boxToReveal)
             expect(gameBoard.getBoxIn(...boxToReveal).revealed).toBeTruthy()
+            expect(gameBoard.getBoxIn(...boxToReveal).nearby_mines).toBe(1)
             // Sus vecinos no deben haber sido revelados puesto que hay una mina en ellos
             const neighbours = gameBoard.getNeighbours(...boxToReveal)
             neighbours.forEach(box => expect(box.revealed).toBeFalsy())
@@ -121,6 +123,36 @@ describe('Test Game Board', () => {
             const board = gameBoard.board
             board.forEach( row => row.forEach(box => expect(box.revealed).toBeTruthy))
         });
+
+        test('Revelar casilla: 2 minas', () => {
+            const gameBoard = new GameBoard(5, 5)
+            gameBoard.setMineIn(1,1)
+            gameBoard.setMineIn(1,2)
+            gameBoard.revealBox(2,1)
+            const boxRevealed = gameBoard.getBoxIn(2,1)
+            expect(boxRevealed.revealed).toBeTruthy()
+            //boxRevealed.nearby_mines += 1
+            //console.log(boxRevealed.nearby_mines)
+            expect(boxRevealed.nearby_mines).toBe(2)
+        })
+
+        test('Revelar casilla: 2 minas. Caso recursión: Verificación de número de minas cercanas de vecinos', () => {
+            const gameBoard = new GameBoard(5, 5)
+            gameBoard.setMineIn(0,2)
+            gameBoard.setMineIn(0,3)
+            gameBoard.revealBox(4,0)
+            // Verificamos si las casillas vecinas liberadas por recursión de las minas indican número correcto de minas cercanas
+            // Vecinos liberados de mina [0,2]
+            expect(gameBoard.getBoxIn(0,1).nearby_mines).toBe(1)
+            expect(gameBoard.getBoxIn(1,1).nearby_mines).toBe(1)
+            expect(gameBoard.getBoxIn(1,2).nearby_mines).toBe(2)
+            expect(gameBoard.getBoxIn(1,3).nearby_mines).toBe(2)
+            // Vecinos liberados de mina [0,3]
+            expect(gameBoard.getBoxIn(1,2).nearby_mines).toBe(2)
+            expect(gameBoard.getBoxIn(1,3).nearby_mines).toBe(2)
+            expect(gameBoard.getBoxIn(1,4).nearby_mines).toBe(1)
+        })
+
 
         test('Revelar casilla fuera de rango', () => {
             const gameBoard = new GameBoard(5, 5)

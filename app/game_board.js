@@ -77,14 +77,14 @@ export class GameBoard {
     }
 
     revealBox(i, j){
-        let box = this.getBoxIn(i, j)
-        if (box.reveal()){
+        const box = this.getBoxIn(i, j)
+        if (!box.revealed){
+            box.reveal()
             if (!box.is_mine){
                 // Check neighboring cells for counting bombs
                 let sideCells = this.getNeighbours(i, j)
                 // Nos quedamos con aquellas aún no reveladas. Necesario para limitar la recursión
                 sideCells = sideCells.filter( box => !box.revealed)
-                box.nearby_mines = 0
                 sideCells.forEach( cell => {
                     if(cell.is_mine){
                         box.nearby_mines++
@@ -117,6 +117,7 @@ export class GameBoard {
                     sideCell.position = [i+di, j+dj]
                     cells.push(sideCell)
                 }catch{
+                    // console.log('Encontre un undefined!')
                     // omitir este error. Quizás sea buena idea definir una excepción personalizada "IndexOutOfRange"
                 }
             }
