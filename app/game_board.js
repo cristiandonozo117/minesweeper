@@ -1,4 +1,5 @@
 import { Box } from "./box.js"
+import { GameOver } from "./exceptions.js"
 
 export class GameBoard {
     #rows
@@ -96,7 +97,7 @@ export class GameBoard {
                 }
             }else{
                 // Lost Game
-                throw Error('Lost Game')
+                throw new GameOver()
             }
         }
     }
@@ -123,6 +124,14 @@ export class GameBoard {
             }
         }
         return cells
+    }
+
+    gameCompleted(){
+        let revealedBoxes = 0
+        this.#board.forEach( row => row.forEach( box => {
+            if (box.revealed){ revealedBoxes++ }
+        }))
+        return revealedBoxes + this.#totalMines == this.#rows*this.#cols
     }
 }
 

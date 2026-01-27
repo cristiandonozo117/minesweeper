@@ -1,5 +1,6 @@
 import { GameBoard } from "../app/game_board.js"
 import { Box } from "../app/box.js"
+import { GameOver } from "../app/exceptions.js";
 
 describe('Test Game Board', () => {
     test('Instancia', () => {
@@ -159,10 +160,19 @@ describe('Test Game Board', () => {
             expect(() => gameBoard.revealBox(-1, -1)).toThrow(Error)
         });
 
-        test('Revelar casilla con minal. Juego perdido', () => {
+        test('Revelar casilla con mina. Juego perdido', () => {
             const gameBoard = new GameBoard(5, 5)
             gameBoard.setMineIn(0,0)
-            expect(() => gameBoard.revealBox(0,0)).toThrow('Lost Game')
-        })
+            expect(() => gameBoard.revealBox(0,0)).toThrow(GameOver)
+        });
+
+        test('Revelar casilla. Debe completarse el juego', () => {
+            const gameBoard = new GameBoard(5, 5)
+            gameBoard.setMineIn(0,0)
+            gameBoard.setMineIn(0,1)
+             expect(gameBoard.gameCompleted()).toBeFalsy()
+            gameBoard.revealBox(4,4)
+            expect(gameBoard.gameCompleted()).toBeTruthy()
+        });
     });
 })
