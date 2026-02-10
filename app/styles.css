@@ -1,0 +1,53 @@
+body{
+    font-family: sans-serif;
+    text-align: center;
+}
+
+.btn-start-game{
+    text-align: center;
+    padding: 10px;
+    margin: 10px;
+}
+
+.container{
+}
+
+table{
+    border-collapse: collapse;
+    margin: 0 auto;
+}
+
+table tr td{
+    border: 1px solid black;
+    text-align: center;
+    /* width: 30px;
+    height: 30px; */
+    padding: 20px;
+}
+
+/* Background colors según número de bombas */
+
+.bombs-0{
+    background-color: #a2a2a2bf;
+    color: transparent
+}
+
+.bombs-1{
+    background-color: #55dd12ae;
+}
+
+.bombs-2{
+    background-color: #eeff69ce;
+}
+
+.bombs-3{
+    background-color: #ffb028d4;
+}
+
+.bombs-4{
+    background-color: #ff651dbc;
+}
+
+.bombs-5, .bombs-6, .bombs-7, .bombs-8{
+    background-color: #ff1500c6;
+}
