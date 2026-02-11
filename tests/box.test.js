@@ -11,6 +11,7 @@ describe('Test Clase Box (Celda/Casilla)', () => {
         expect(box.is_mine).toBeTruthy()
         expect(box.revealed).toBeFalsy()
         expect(box.flag).toBeFalsy()
+        expect(box.position).toBeNull()
     });
 
     test('Revelar celda', () => {

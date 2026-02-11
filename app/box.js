@@ -7,6 +7,7 @@ export class Box {
         this.revealed = false
         this.flag = false
         this.nearby_mines = 0
+        this.position = null
     }
 
     reveal() {

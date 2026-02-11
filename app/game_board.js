@@ -34,6 +34,7 @@ export class GameBoard {
             row = []
             for (let j=0; j<this.#cols; j++){
                 box = new Box(false)
+                box.position = [i, j]
                 row.push(box)
             }
             board.push(row)
@@ -113,9 +114,7 @@ export class GameBoard {
                     continue // skip self cell [i,j]
                 }
                 try{
-                    // Le agrego una propiedad a la instancia del objeto
                     let sideCell = this.getBoxIn(i+di, j+dj)
-                    sideCell.position = [i+di, j+dj]
                     cells.push(sideCell)
                 }catch{
                     // console.log('Encontre un undefined!')
