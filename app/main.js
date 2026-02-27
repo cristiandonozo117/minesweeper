@@ -24,13 +24,26 @@ startButton.addEventListener('click', () => {
     const render = new Render(gameBoard)
     const table = render.renderBoard()
     gameContainer.appendChild(table)
+
     // Eventos del juego...
-    table.addEventListener('click', (event) => {
+    table.addEventListener('mousedown', (event) => {
+        event.preventDefault();
         // Si el id del elemento es justamente identificación de celda
         if (event.target.id.match(/^[0-9]{1}-[0-9]{1}$/)){
             try{
                 const position = event.target.id.split('-').map(pos => parseInt(pos))
-                gameBoard.revealBox(...position)
+                
+                let click = event.button
+                switch (click){
+                    case 0: // Click izq.
+                        gameBoard.revealBox(...position)
+                        break
+                    case 2: // Click der.
+                        gameBoard.switchFlagBoxIn(...position)
+                        render.switchFlagCellIn(...position)
+                        break
+                }
+
                 //console.log(gameBoard.getBoxIn(...position))
                 render.updateBoard()
 
@@ -45,5 +58,10 @@ startButton.addEventListener('click', () => {
                 }
             }
         }
+    })
+
+    // Ignorar despliegue menu de contexto
+    table.addEventListener('contextmenu', (event) => {
+        event.preventDefault()
     })
 })

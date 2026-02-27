@@ -50,10 +50,6 @@ export class GameBoard {
     }
 
     setMineIn(i, j){
-        // if (!((i >= 0 && i < this.#rows) && (j >= 0 && j < this.#cols))){
-        //     throw Error(`Index out of range: [${i}, ${j}]`)
-        // }
-        // const box = this.#board[i][j]
         const box = this.getBoxIn(i, j)
         if (!box.is_mine){
             box.is_mine = true
@@ -80,7 +76,7 @@ export class GameBoard {
 
     revealBox(i, j){
         const box = this.getBoxIn(i, j)
-        if (!box.revealed){
+        if (!box.revealed && !box.flag){
             box.reveal()
             if (!box.is_mine){
                 // Check neighboring cells for counting bombs
@@ -101,6 +97,11 @@ export class GameBoard {
                 throw new GameOver()
             }
         }
+    }
+
+    switchFlagBoxIn(i, j){
+        const box = this.getBoxIn(i, j)
+        box.switch_flag()
     }
 
     getNeighbours(i, j){

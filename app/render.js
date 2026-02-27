@@ -41,4 +41,9 @@ export class Render{
         }))
     }
 
+    switchFlagCellIn(i, j){
+        const cell = document.getElementById(`${i}-${j}`)
+        const box = this.#gameBoard.getBoxIn(i, j)
+        cell.textContent = box.flag ? 'F' : '-'
+    }
 }

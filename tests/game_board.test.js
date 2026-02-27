@@ -79,6 +79,26 @@ describe('Test Game Board', () => {
         expect(() => expect(gameBoard.getNeighbours(-1,-1))).toThrow(Error)
     });
 
+    test('Colocar bandera en una celda', () => {
+        const gameBoard = new GameBoard(5, 5)
+        const box = gameBoard.getBoxIn(2, 2)
+        // Colocamos bandera
+        gameBoard.switchFlagBoxIn(2, 2)
+        expect(box.flag).toBeTruthy()
+        // Quitamos bandera
+        gameBoard.switchFlagBoxIn(2, 2)
+        expect(box.flag).toBeFalsy()
+    })
+
+    test('Intento colocar bandera en celda revelada', () => {
+        const gameBoard = new GameBoard(5, 5)
+        const box = gameBoard.getBoxIn(2, 2)
+        gameBoard.revealBox(2, 2)
+        expect(box.flag).toBeFalsy()
+        gameBoard.switchFlagBoxIn(2, 2)
+        expect(box.flag).toBeFalsy() // Debe seguir sin tener bandera
+    })
+
     describe('Reveal Box feat', () => {
         test('Revelar casilla: Sin minas. Debe revelarse el tablero completo', () => {
             const gameBoard = new GameBoard(5, 5)
