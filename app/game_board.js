@@ -99,6 +99,39 @@ export class GameBoard {
         }
     }
 
+    revealNeighbours(i, j){
+        const box = this.getBoxIn(i, j)
+        // Si está revelada, entonces analizamos
+        if (box.revealed){
+            const sideCells = this.getNeighbours(i, j)
+            let totalFlags = 0
+            let correctFlags = 0
+            sideCells.forEach((sideCell => {
+                if (sideCell.flag){
+                    totalFlags++
+                    if (sideCell.is_mine){
+                        correctFlags++
+                    }
+                }
+            }))
+            // Si el total coincide con número de minas cercanas
+            if (totalFlags == box.nearby_mines){
+                // Si son todas marcadas correctamente
+                if (totalFlags == correctFlags){
+                    sideCells.forEach(sideCell => {
+                        if (!sideCell.is_mine){
+                            //sideCell.reveal()
+                            this.revealBox(...sideCell.position)
+                        }
+                    })
+                }else{
+                    throw new GameOver()
+                }
+            }
+        }
+    }
+
+
     switchFlagBoxIn(i, j){
         const box = this.getBoxIn(i, j)
         box.switch_flag()

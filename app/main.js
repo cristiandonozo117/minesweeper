@@ -32,11 +32,16 @@ startButton.addEventListener('click', () => {
         if (event.target.id.match(/^[0-9]{1}-[0-9]{1}$/)){
             try{
                 const position = event.target.id.split('-').map(pos => parseInt(pos))
+                const box = gameBoard.getBoxIn(...position)
                 
                 let click = event.button
                 switch (click){
                     case 0: // Click izq.
-                        gameBoard.revealBox(...position)
+                        if (!box.revealed){
+                            gameBoard.revealBox(...position)
+                        }else{
+                            gameBoard.revealNeighbours(...position)
+                        }       
                         break
                     case 2: // Click der.
                         gameBoard.switchFlagBoxIn(...position)

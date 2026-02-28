@@ -195,4 +195,89 @@ describe('Test Game Board', () => {
             expect(gameBoard.gameCompleted()).toBeTruthy()
         });
     });
+
+    describe('Banderas vecinas marcadas: Efecto en revelar vecinos', () => {
+        test('Ninguna bandera', () => {
+            const gameBoard = new GameBoard(5, 5)
+            gameBoard.setMineIn(2, 2)
+            // Revelamos una al costado
+            gameBoard.revealBox(2, 3)
+            // Ahora intentamos revelar sus vecinos, al no haber flag, no debe cambiar nada
+            gameBoard.revealNeighbours(2, 3)
+            // Revisamos todos sus vecinos, no deben haberse revelado
+            gameBoard.getNeighbours(2, 3).forEach(sideCell => {
+                expect(sideCell.revealed).toBeFalsy()
+            })
+        });
+
+        // Revelar todos los vecinos!
+        test('Banderas correctas', () => {
+            const gameBoard = new GameBoard(5, 5)
+            // Dos bombas
+            gameBoard.setMineIn(2, 2)
+            gameBoard.setMineIn(2, 3)
+            // Revelamos una cercana
+            gameBoard.revealBox(1, 2)
+            // Marcamos banderas en la minas
+            gameBoard.switchFlagBoxIn(2, 2)
+            gameBoard.switchFlagBoxIn(2, 3)
+            // Revelamos los vecinos de la ya revelada
+            gameBoard.revealNeighbours(1, 2)
+            gameBoard.getNeighbours(1, 2).forEach(sideCell => {
+                // Si es mina, no debe haberse revelado, 
+                if (sideCell.flag){
+                    expect(sideCell.revealed).toBeFalsy()
+                }else{  // si no lo es, sí
+                    expect(sideCell.revealed).toBeTruthy()
+                }
+            })
+        });
+
+        test('Banderas incorrectas. Game Over', () => {
+            const gameBoard = new GameBoard(5, 5)
+            gameBoard.setMineIn(2, 2)
+            // Revelamos un vecino de la mina
+            gameBoard.revealBox(1, 2)
+            // Marcamos bandera en una celda que no es mina
+            gameBoard.switchFlagBoxIn(2, 3)
+            // Al intentar revelar los vecinos, debe lanzarse excepción de GameOver
+            expect(() => gameBoard.revealNeighbours(1, 2)).toThrow(GameOver)
+        });
+
+        test('Número faltante de banderas. Sin efecto', () => {
+            const gameBoard = new GameBoard(5, 5)
+            // Colocamos dos minas
+            gameBoard.setMineIn(2, 2)
+            gameBoard.setMineIn(2, 3)
+            // Revelamos una
+            gameBoard.revealBox(1, 2)
+            // Marcamos una sola bandera
+            gameBoard.switchFlagBoxIn(2, 2)
+            // Revelamos vecinos de la ya revelada
+            gameBoard.revealNeighbours(1, 2)
+            gameBoard.getNeighbours(1, 2).forEach(sideCell => {
+                // Puesto que faltan más banderas, ningun vecino debe haber sido revelado
+                expect(sideCell.revealed).toBeFalsy()
+            }) 
+        });
+
+        test('Número sobrante de banderas. Sin efecto', () => {
+            const gameBoard = new GameBoard(5, 5)
+            // Colocamos dos minas
+            gameBoard.setMineIn(2, 2)
+            gameBoard.setMineIn(2, 3)
+            // Revelamos una
+            gameBoard.revealBox(1, 2)
+            // Marcamos más banderas
+            gameBoard.switchFlagBoxIn(2, 2)
+            gameBoard.switchFlagBoxIn(2, 3)
+            gameBoard.switchFlagBoxIn(1, 3)
+            // Revelamos vecinos de la ya revelada
+            gameBoard.revealNeighbours(1, 2)
+            gameBoard.getNeighbours(1, 2).forEach(sideCell => {
+                // Puesto que sobran banderas, ningun vecino debe haber sido revelado
+                expect(sideCell.revealed).toBeFalsy()
+            }) 
+        })
+    })
 })

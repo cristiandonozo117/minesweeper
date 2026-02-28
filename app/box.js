@@ -14,7 +14,6 @@ export class Box {
         if (!this.flag){
             this.revealed = true
         }
-        //return this.revealed
     }
 
     switch_flag() {
