@@ -1,5 +1,5 @@
 import { Box } from "./box.js"
-import { GameOver } from "./exceptions.js"
+import { RevealedMine, WrongFlags } from "./exceptions.js"
 
 export class GameBoard {
     #rows
@@ -94,7 +94,7 @@ export class GameBoard {
                 }
             }else{
                 // Lost Game
-                throw new GameOver()
+                throw new RevealedMine()
             }
         }
     }
@@ -125,7 +125,7 @@ export class GameBoard {
                         }
                     })
                 }else{
-                    throw new GameOver()
+                    throw new WrongFlags()
                 }
             }
         }

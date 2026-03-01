@@ -46,4 +46,30 @@ export class Render{
         const box = this.#gameBoard.getBoxIn(i, j)
         cell.textContent = box.flag ? 'F' : '-'
     }
+
+    // Muestra todas las minas del tablero y aquellas flags marcadas incorrectamente
+    showAllMines(){
+        this.#gameBoard.board.forEach((row, i) => row.forEach( (box, j) => {
+            let cell = document.getElementById(`${i}-${j}`)
+            if (box.is_mine && !box.flag){ // Mina revelada
+                cell.textContent = 'B'
+            }else if (box.flag && !box.is_mine){ // Banderas incorrectas
+                cell.style.color = 'red'
+            }
+        }))
+    }
+
+    highlightMine(i, j){
+        let cell = document.getElementById(`${i}-${j}`)
+        cell.style.color = 'red'
+    }
+
+    highlightNeigboringMines(i, j){
+        let sideCells = this.#gameBoard.getNeighbours(i, j)
+        sideCells.forEach(box => {
+            if (box.is_mine && !box.flag){
+                this.highlightMine(...box.position)
+            }
+        })
+    }
 }

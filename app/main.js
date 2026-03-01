@@ -1,4 +1,4 @@
-import { GameOver } from "./exceptions.js";
+import { RevealedMine, WrongFlags } from "./exceptions.js";
 import { GameBoard } from "./game_board.js";
 import { Render } from "./render.js";
 
@@ -30,8 +30,8 @@ startButton.addEventListener('click', () => {
         event.preventDefault();
         // Si el id del elemento es justamente identificación de celda
         if (event.target.id.match(/^[0-9]{1}-[0-9]{1}$/)){
+            const position = event.target.id.split('-').map(pos => parseInt(pos))
             try{
-                const position = event.target.id.split('-').map(pos => parseInt(pos))
                 const box = gameBoard.getBoxIn(...position)
                 
                 let click = event.button
@@ -58,9 +58,13 @@ startButton.addEventListener('click', () => {
                 }
 
             }catch (exception){
-                if (exception instanceof GameOver){
-                    alert(exception.message)
+                render.showAllMines(...position)
+                if (exception instanceof RevealedMine){
+                    render.highlightMine(...position)
+                }else if (exception instanceof WrongFlags){
+                    render.highlightNeigboringMines(...position)
                 }
+                alert(exception.message)
             }
         }
     })
