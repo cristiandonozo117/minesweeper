@@ -28,7 +28,7 @@ export class Render{
         return table
     }
 
-    updateBoard(){
+    showRevealedCells(){
         let cell
         this.#gameBoard.board.forEach((row, i) => row.forEach( (box, j) => {
             if (box.revealed){
@@ -44,7 +44,13 @@ export class Render{
     switchFlagCellIn(i, j){
         const cell = document.getElementById(`${i}-${j}`)
         const box = this.#gameBoard.getBoxIn(i, j)
-        cell.textContent = box.flag ? 'F' : '-'
+        // Si tiene bandera
+        if (box.flag){
+            cell.textContent = 'F'
+        // Si no tiene bandera y aún no está revelada
+        }else if (!box.flag && !box.revealed){
+            cell.textContent = '-'
+        }
     }
 
     // Muestra todas las minas del tablero y aquellas flags marcadas incorrectamente

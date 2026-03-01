@@ -29,7 +29,7 @@ startButton.addEventListener('click', () => {
     table.addEventListener('mousedown', (event) => {
         event.preventDefault();
         // Si el id del elemento es justamente identificación de celda
-        if (event.target.id.match(/^[0-9]{1}-[0-9]{1}$/)){
+        if (event.target.id.match(/^[0-9]+-[0-9]+$/)){
             const position = event.target.id.split('-').map(pos => parseInt(pos))
             try{
                 const box = gameBoard.getBoxIn(...position)
@@ -41,7 +41,8 @@ startButton.addEventListener('click', () => {
                             gameBoard.revealBox(...position)
                         }else{
                             gameBoard.revealNeighbours(...position)
-                        }       
+                        }
+                        render.showRevealedCells()
                         break
                     case 2: // Click der.
                         gameBoard.switchFlagBoxIn(...position)
@@ -49,8 +50,6 @@ startButton.addEventListener('click', () => {
                         break
                 }
 
-                //console.log(gameBoard.getBoxIn(...position))
-                render.updateBoard()
 
                 // Si se ha completado el juego
                 if (gameBoard.gameCompleted()){
