@@ -10,6 +10,7 @@ let gameBoard
 let renderer
 let time = 0
 let timeCounterID
+let bestTime
 let state = 'PLAYING'
 
 // Renderizar menú inicial
@@ -17,9 +18,10 @@ prepareMenu()
 container.addEventListener('mousedown', event => {
     const target = event.target
 
-    // SELECCIÓN DIFICULTAD
+    // SELECCIÓN DIFICULTAD -> Prepara y muestra tablero, opciones y estadísticas
     if (target.classList.contains('btn-difficulty')){
         diff = target.dataset.level
+        bestTime = getBestScoreTimeByDiff(diff)
         
         // Elimino los botones y creamos otras opciones
         document.getElementsByClassName('difficulty-selection').item(0).remove()
@@ -54,9 +56,15 @@ container.addEventListener('mousedown', event => {
 
             // Si se ha completado el juego
             if (gameBoard.gameCompleted()){
-                state = 'GAMEOVER'
                 stopTimeCounter(timeCounterID)
-                alert(`Congratulations! You have finsihed the game! Time: ${time} seconds`)
+                state = 'GAMEOVER'
+                let successMsg = `You have finished the game! Time: ${time} seconds.`
+
+                if (bestTime == null || time < parseInt(bestTime)){
+                    saveBestScoreTimeByDiff(diff, time)
+                    successMsg += ' New Record!'
+                }
+                alert(successMsg)
             }
         }catch (exception){
             state = 'GAMEOVER'
@@ -114,16 +122,19 @@ function getConfigDiffculty(diff){
 function initializeGame(configDiff){
     gameBoard = new GameBoard(configDiff.rows, configDiff.cols)
     gameBoard.setRandomMines(configDiff.mines)
-    // renderer = new Renderer(gameBoard, container)
     renderer = new Render(gameBoard)
     container.append(renderer.renderBoard())
 }
 
 function headOptions(){
+    console.log(bestTime)
     container.innerHTML = `
         <div class="head-options">
             <button class="btn-restart">Restart</button>
             <button class="btn-change-diff">Change difficulty</button>
+            <p class="best-time">Best time score (${diff} level): 
+                ${bestTime ? formatTime(parseInt(bestTime)) : 'No score time has been recorded yet'}
+            </p>
             <p class="time-counter"></p>
         </div>
     `
@@ -149,9 +160,22 @@ function stopTimeCounter(intervalID){
 function updateTimeCounterDisplayer(){
     const displayTimeCounter = document.getElementsByClassName("time-counter").item(0)
     // Muestro en formato: minutos:segundos
+    displayTimeCounter.innerText = formatTime(time)
+}
+
+function getBestScoreTimeByDiff(diff){
+    return localStorage.getItem(`minesweeper-best-score-time-${diff}`)
+}
+
+function saveBestScoreTimeByDiff(diff, time){
+    return localStorage.setItem(`minesweeper-best-score-time-${diff}`, time)
+}
+
+// Get time in the format mm:ss
+function formatTime(time){
     let minutes = Math.floor(time/60)
     let seconds = time - minutes*60
     minutes = minutes < 10 ? `0${minutes}` : minutes
     seconds = seconds < 10 ? `0${seconds}` : seconds
-    displayTimeCounter.innerText = `Time: ${minutes}:${seconds}`
+    return `${minutes}:${seconds}`
 }
