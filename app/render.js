@@ -15,6 +15,7 @@ export class Render{
             line = document.createElement('tr')
             row.forEach((box, j) => {
                 cell = document.createElement('td')
+                cell.classList.add('cell')
                 cell.id = `${i}-${j}` // Ej: 1-2
                 cell.textContent = '-' // Hidden
                 line.append(cell)
@@ -25,6 +26,8 @@ export class Render{
             })
             table.append(line)
         })
+        // Para ignorar despliegue menú de contexto se hace click izq.
+        table.addEventListener('contextmenu', event => event.preventDefault())
         return table
     }
 
@@ -70,7 +73,7 @@ export class Render{
         cell.style.color = 'red'
     }
 
-    highlightNeigboringMines(i, j){
+    highlightNeighboringMines(i, j){
         let sideCells = this.#gameBoard.getNeighbours(i, j)
         sideCells.forEach(box => {
             if (box.is_mine && !box.flag){
