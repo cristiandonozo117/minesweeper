@@ -4,9 +4,12 @@ import { RevealedMine, WrongFlags } from "./exceptions.js"
 
 const container = document.getElementById('container')
 // Nota: Probablemente no sea necesario reconocer los estados del juego
+let diff
 let configDiff
 let gameBoard
 let renderer
+let time = 0
+let timeCounterID
 let state = 'PLAYING'
 
 // Renderizar menú inicial
@@ -16,14 +19,15 @@ container.addEventListener('mousedown', event => {
 
     // SELECCIÓN DIFICULTAD
     if (target.classList.contains('btn-difficulty')){
-        const diff = target.dataset.level
+        diff = target.dataset.level
         
-        // Elimino los botones y creamos otras oprciones
+        // Elimino los botones y creamos otras opciones
         document.getElementsByClassName('difficulty-selection').item(0).remove()
-        restartOptions()
+        headOptions()
 
         configDiff = getConfigDiffculty(diff)
         initializeGame(configDiff)
+        timeCounterID = startTimeCounter()
         state = 'PLAYING'
     }
 
@@ -51,7 +55,8 @@ container.addEventListener('mousedown', event => {
             // Si se ha completado el juego
             if (gameBoard.gameCompleted()){
                 state = 'GAMEOVER'
-                alert('Congratulations! You have finsihed the game!')
+                stopTimeCounter(timeCounterID)
+                alert(`Congratulations! You have finsihed the game! Time: ${time} seconds`)
             }
         }catch (exception){
             state = 'GAMEOVER'
@@ -61,7 +66,8 @@ container.addEventListener('mousedown', event => {
             }else if (exception instanceof WrongFlags){
                 renderer.highlightNeighboringMines(...position)
             }
-            alert(exception.message)
+            stopTimeCounter(timeCounterID)
+            alert(`${exception.message}. Time: ${time} seconds`)
         }
     }
 
@@ -70,6 +76,8 @@ container.addEventListener('mousedown', event => {
         if (confirmRestart()){
             document.getElementById('tablero').remove()
             initializeGame(configDiff)
+            stopTimeCounter(timeCounterID)
+            timeCounterID = startTimeCounter()
             state = 'PLAYING'
         }
     }
@@ -78,6 +86,7 @@ container.addEventListener('mousedown', event => {
     if (target.classList.contains('btn-change-diff')){
         if (confirmRestart()){
             prepareMenu()
+            stopTimeCounter(timeCounterID)
         }
     }
 })
@@ -110,15 +119,39 @@ function initializeGame(configDiff){
     container.append(renderer.renderBoard())
 }
 
-function restartOptions(){
+function headOptions(){
     container.innerHTML = `
         <div class="head-options">
             <button class="btn-restart">Restart</button>
             <button class="btn-change-diff">Change difficulty</button>
+            <p class="time-counter"></p>
         </div>
     `
 }
 
 function confirmRestart(){
     return window.confirm('Are you sure you want to restart to a new game?')
+}
+
+function startTimeCounter(){
+    time = 0
+    updateTimeCounterDisplayer()
+    return setInterval(() => {
+        time += 1
+        updateTimeCounterDisplayer()
+    }, 1000)
+}
+
+function stopTimeCounter(intervalID){
+    clearInterval(intervalID)
+}
+
+function updateTimeCounterDisplayer(){
+    const displayTimeCounter = document.getElementsByClassName("time-counter").item(0)
+    // Muestro en formato: minutos:segundos
+    let minutes = Math.floor(time/60)
+    let seconds = time - minutes*60
+    minutes = minutes < 10 ? `0${minutes}` : minutes
+    seconds = seconds < 10 ? `0${seconds}` : seconds
+    displayTimeCounter.innerText = `Time: ${minutes}:${seconds}`
 }
