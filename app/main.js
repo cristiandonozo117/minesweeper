@@ -25,12 +25,18 @@ container.addEventListener('mousedown', event => {
         
         // Elimino los botones y creamos otras opciones
         document.getElementsByClassName('difficulty-selection').item(0).remove()
-        headOptions()
-
+        
         configDiff = getConfigDiffculty(diff)
+        headOptions()
         initializeGame(configDiff)
         timeCounterID = startTimeCounter()
         state = 'PLAYING'
+
+        // Establezco dos columnas y una fila
+        // container.style.gridTemplateColumns = 'auto 30%'
+        // container.style.gridTemplateColumns = 'min-content 1fr'
+        container.style.gridTemplateColumns = 'minmax(0, 1fr) 20vw'
+        container.style.gridTemplateRows = '1fr'
     }
 
     // ACCIÓN DE JUEGO
@@ -94,8 +100,9 @@ container.addEventListener('mousedown', event => {
     // CAMBIO DE DIFICULTAD
     if (target.classList.contains('btn-change-diff')){
         if (confirmRestart()){
-            prepareMenu()
             stopTimeCounter(timeCounterID)
+            prepareMenu()
+            container.style.gridTemplateColumns = '1fr' // Vuelvo a establecer una fila
         }
     }
 })
@@ -115,7 +122,7 @@ function getConfigDiffculty(diff){
     const config = {
         easy: {rows: 8, cols: 8, mines: 10},
         medium: {rows: 16, cols: 16, mines: 40},
-        hard: {rows: 30, cols: 16, mines: 99}
+        hard: {rows: 16, cols: 30, mines: 99}
     }  
     return config[diff]
 }
@@ -133,7 +140,7 @@ function headOptions(){
             <button class="btn-restart">Restart</button>
             <button class="btn-change-diff">Change difficulty</button>
             <p class="best-time">Best time score (${diff} level): 
-                ${bestTime ? formatTime(parseInt(bestTime)) : 'No score time has been recorded yet'}
+                ${bestTime ? formatTime(parseInt(bestTime)) : 'None'}
             </p>
             <p class="time-counter"></p>
         </div>

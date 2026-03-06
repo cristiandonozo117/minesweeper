@@ -17,11 +17,13 @@ export class Render{
             cell = document.createElement('div')
             cell.classList.add('cell')
             cell.id = `${i}-${j}` // Ej: 1-2
-            cell.textContent = '-' // Hidden
+            cell.textContent = '' // Hidden
             board.append(cell)
         }))
         // Para ignorar despliegue menú de contexto si se hace click izq.
         board.addEventListener('contextmenu', event => event.preventDefault())
+        // Para aspect-ratio que ajuste el rectangulo del board
+        board.style.setProperty('--board-aspect', `${cols} / ${rows}`);
         return board
     }
 
@@ -44,9 +46,9 @@ export class Render{
         // Si tiene bandera
         if (box.flag){
             cell.textContent = 'F'
-        // Si no tiene bandera y aún no está revelada
+        // Si no tiene bandera y aún no está revelada, lo volvemos a hidden
         }else if (!box.flag && !box.revealed){
-            cell.textContent = '-'
+            cell.textContent = ''
         }
     }
 

@@ -5,16 +5,22 @@ body{
     /* border: 3px solid red; */
     padding: 0;
     margin: 0;
+    /* Con grilla de 2 filas (una para el h1 y la otra para los elementos del juego) */
+    display: grid;
+    grid-template-rows: auto 1fr;
+    /* flex-direction: column; */
     box-sizing: border-box;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+    min-height: 100vh; /* Toda la pantalla */
 }
 
 h1{
-    margin: 1;
+    margin: 1px;
     padding: 0;
     font-size: medium;
+}
+
+button{
+    margin: 5px;
 }
 
 .btn-start-game{
@@ -25,38 +31,59 @@ h1{
 
 .container{
     /* border: 3px solid blue; */
+    display: grid;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    gap: 10px; /* Separación entre elementos de la grilla */
+    width: 100vw; /* Aseguramos que el contenedor no mida más que la pantalla */
+}
+
+.head-options{
+    font-size: small;
+    grid-row: 1;
+    grid-column: 2 / 3;
+
+    /* Flex para ajstar los elementos internos */
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
-}
+    align-items: center;
 
-table{
-    border-collapse: collapse;
-    margin: 0 auto;
-}
+    justify-self: flex-start;
+    overflow-y: auto; /* Si el contenido no cabe a lo alto, aparece scroll AQUÍ */
+    box-sizing: border-box;
 
-table tr td{
-    border: 1px solid black;
-    text-align: center;
-    /* width: 30px;
-    height: 30px; */
-    padding: 20px;
+    /* Estética para que se vea integrado */
+    border-left: 1px solid #ccc;
+    background-color: #f9f9f9;
 }
 
 .board-game{
+    grid-row: 1;
+    grid-column: 1 / 2;
+    
     display: grid;
-    margin: auto;
-    flex-grow: 1;
-    /* width: 30%; */
-    aspect-ratio: 1 / 1;
+    height: 100%;
+    /* Usamos una variable. Si no existe, por defecto será 1/1 */
+    aspect-ratio: var(--board-aspect, 1 / 1);
+
+    box-sizing: border-box;
+    /* CENTRADO CLAVE */
+    justify-self: center; /* Centra horizontalmente dentro de su columna */
+    align-self: center;   /* Centra verticalmente si el h1 es pequeño */
+
+    min-height: 300px; /* Evita que el juego se vuelva minúsculo */    
+    max-width: 100%; /* No puede ser más ancho que su columna (el 80% restante) */
+    max-height: 100%; /* No puede ser más alto que el espacio disponible */
+    object-fit: contain; /* Ayuda a mantener la proporción si hay conflictos */
 }
 
 .cell{
-    align-content: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border: 1px solid black;
-    border-collapse: collapse;
 }
-
 
 /* Background colors según número de bombas */
 .bombs-0{
