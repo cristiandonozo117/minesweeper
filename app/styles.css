@@ -1,6 +1,20 @@
 body{
     font-family: sans-serif;
     text-align: center;
+    
+    /* border: 3px solid red; */
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+h1{
+    margin: 1;
+    padding: 0;
+    font-size: medium;
 }
 
 .btn-start-game{
@@ -10,6 +24,10 @@ body{
 }
 
 .container{
+    /* border: 3px solid blue; */
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }
 
 table{
@@ -25,8 +43,22 @@ table tr td{
     padding: 20px;
 }
 
-/* Background colors según número de bombas */
+.board-game{
+    display: grid;
+    margin: auto;
+    flex-grow: 1;
+    /* width: 30%; */
+    aspect-ratio: 1 / 1;
+}
 
+.cell{
+    align-content: center;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+
+/* Background colors según número de bombas */
 .bombs-0{
     background-color: #a2a2a2bf;
     color: transparent

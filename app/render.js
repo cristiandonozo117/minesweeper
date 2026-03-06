@@ -5,30 +5,24 @@ export class Render{
         this.#gameBoard = gameBoard
     }
 
+    // Renderizado de tablero
     renderBoard(){
-        // Renderizado del tablero
-        const table = document.createElement('table')
-        table.id = 'tablero'
-        table.className = 'table'
-        let line, cell
-        this.#gameBoard.board.forEach((row, i) => {
-            line = document.createElement('tr')
-            row.forEach((box, j) => {
-                cell = document.createElement('td')
-                cell.classList.add('cell')
-                cell.id = `${i}-${j}` // Ej: 1-2
-                cell.textContent = '-' // Hidden
-                line.append(cell)
-
-                // if (box.is_mine){
-                //     cell.textContent = 'B'
-                // }
-            })
-            table.append(line)
-        })
-        // Para ignorar despliegue menú de contexto se hace click izq.
-        table.addEventListener('contextmenu', event => event.preventDefault())
-        return table
+        const board = document.createElement('div')
+        let [rows, cols] = this.#gameBoard.getShape()
+        board.className = 'board-game'
+        board.style.gridTemplateRows = `repeat(${rows}, 1fr)`
+        board.style.gridTemplateColumns = `repeat(${cols}, 1fr)`
+        let cell
+        this.#gameBoard.board.forEach((row, i) => row.forEach((box, j) => {
+            cell = document.createElement('div')
+            cell.classList.add('cell')
+            cell.id = `${i}-${j}` // Ej: 1-2
+            cell.textContent = '-' // Hidden
+            board.append(cell)
+        }))
+        // Para ignorar despliegue menú de contexto si se hace click izq.
+        board.addEventListener('contextmenu', event => event.preventDefault())
+        return board
     }
 
     showRevealedCells(){

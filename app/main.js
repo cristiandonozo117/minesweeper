@@ -82,7 +82,8 @@ container.addEventListener('mousedown', event => {
     // REINICIO DE JUEGO
     if (target.classList.contains('btn-restart')){
         if (confirmRestart()){
-            document.getElementById('tablero').remove()
+            bestTime = getBestScoreTimeByDiff(diff)
+            headOptions()
             initializeGame(configDiff)
             stopTimeCounter(timeCounterID)
             timeCounterID = startTimeCounter()
@@ -127,7 +128,6 @@ function initializeGame(configDiff){
 }
 
 function headOptions(){
-    console.log(bestTime)
     container.innerHTML = `
         <div class="head-options">
             <button class="btn-restart">Restart</button>
@@ -160,7 +160,7 @@ function stopTimeCounter(intervalID){
 function updateTimeCounterDisplayer(){
     const displayTimeCounter = document.getElementsByClassName("time-counter").item(0)
     // Muestro en formato: minutos:segundos
-    displayTimeCounter.innerText = formatTime(time)
+    displayTimeCounter.innerText = 'Time: ' + formatTime(time)
 }
 
 function getBestScoreTimeByDiff(diff){
