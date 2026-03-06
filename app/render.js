@@ -31,10 +31,8 @@ export class Render{
         let cell
         this.#gameBoard.board.forEach((row, i) => row.forEach( (box, j) => {
             if (box.revealed){
-                //console.log(box)
                 cell = document.getElementById(`${i}-${j}`)
                 cell.textContent = box.nearby_mines
-                //console.log(`bombs-${box.nearby_mines}`)
                 cell.classList.add(`bombs-${box.nearby_mines}`)
             }
         }))
@@ -45,10 +43,10 @@ export class Render{
         const box = this.#gameBoard.getBoxIn(i, j)
         // Si tiene bandera
         if (box.flag){
-            cell.textContent = 'F'
+            cell.classList.add('flag')
         // Si no tiene bandera y aún no está revelada, lo volvemos a hidden
         }else if (!box.flag && !box.revealed){
-            cell.textContent = ''
+            cell.classList.remove('flag')
         }
     }
 
@@ -57,16 +55,16 @@ export class Render{
         this.#gameBoard.board.forEach((row, i) => row.forEach( (box, j) => {
             let cell = document.getElementById(`${i}-${j}`)
             if (box.is_mine && !box.flag){ // Mina revelada
-                cell.textContent = 'B'
+                cell.classList.add('bomb')
             }else if (box.flag && !box.is_mine){ // Banderas incorrectas
-                cell.style.color = 'red'
+                cell.classList.add('wrong')
             }
         }))
     }
 
     highlightMine(i, j){
         let cell = document.getElementById(`${i}-${j}`)
-        cell.style.color = 'red'
+        cell.classList.add('highlighted')
     }
 
     highlightNeighboringMines(i, j){

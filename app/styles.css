@@ -83,6 +83,28 @@ button{
     justify-content: center;
     align-items: center;
     border: 1px solid black;
+
+    background-position: center;
+    background-repeat: no-repeat; /* para no repetir imagen si la celda es grande */
+    background-size: 60%;
+    font-size: 1.5em;
+}
+
+
+.cell.flag{
+    background-image: url('./assets/flag.svg');
+}
+
+.cell.flag.wrong{
+    background-color: #ff6f6f;
+}
+
+.cell.bomb{
+    background-image: url('./assets/land-mine.svg');
+}
+
+.cell.bomb.highlighted{
+    background-color: #ff6f6f;
 }
 
 /* Background colors según número de bombas */
