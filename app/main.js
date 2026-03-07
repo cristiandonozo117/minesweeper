@@ -27,8 +27,8 @@ container.addEventListener('mousedown', event => {
         document.getElementsByClassName('difficulty-selection').item(0).remove()
         
         configDiff = getConfigDiffculty(diff)
-        container.append(initializeGame(configDiff))
         container.innerHTML += headOptions()
+        container.append(initializeGame(configDiff))
         timeCounterID = startTimeCounter()
         state = 'PLAYING'
 
