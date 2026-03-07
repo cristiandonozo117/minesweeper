@@ -21,12 +21,41 @@ h1{
 
 button{
     margin: 5px;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #4efb9c;
+    border-color: #3ab270
 }
+
+button:hover{
+    background-color: #ff7954;
+    border-color: #ff7954;
+    cursor: pointer;
+}
+
+.difficulty-selection{
+    display: flex;
+    flex-direction: column;
+    margin: 0px 20%;
+}
+
 
 .btn-start-game{
     text-align: center;
     padding: 10px;
     margin: 10px;
+}
+
+.btn-restart{
+    background-color: #0075be;
+    color: white;
+    border-color: #000000;
+}
+
+.btn-change-diff{
+    background-color: #0075be;
+    color: white;
+    border-color: black
 }
 
 .container{
@@ -47,7 +76,6 @@ button{
     /* Flex para ajstar los elementos internos */
     display: flex;
     flex-direction: column;
-    align-items: center;
 
     justify-self: flex-start;
     overflow-y: auto; /* Si el contenido no cabe a lo alto, aparece scroll AQUÍ */
@@ -87,7 +115,7 @@ button{
     background-position: center;
     background-repeat: no-repeat; /* para no repetir imagen si la celda es grande */
     background-size: 60%;
-    font-size: 1.5em;
+    font-size: 1.2em;
 }
 
 
@@ -114,7 +142,7 @@ button{
 }
 
 .bombs-1{
-    background-color: #55dd12ae;
+    background-color: #74ffabae;
 }
 
 .bombs-2{
@@ -122,13 +150,13 @@ button{
 }
 
 .bombs-3{
-    background-color: #ffb028d4;
+    background-color: #ffbc47d4;
 }
 
 .bombs-4{
-    background-color: #ff651dbc;
+    background-color: #ff5f15d2;
 }
 
 .bombs-5, .bombs-6, .bombs-7, .bombs-8{
-    background-color: #ff1500c6;
+    background-color: #ff2b18c6;
 }

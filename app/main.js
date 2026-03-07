@@ -14,7 +14,7 @@ let bestTime
 let state = 'PLAYING'
 
 // Renderizar menú inicial
-prepareMenu()
+container.innerHTML = prepareMenu()
 container.addEventListener('mousedown', event => {
     const target = event.target
 
@@ -27,8 +27,8 @@ container.addEventListener('mousedown', event => {
         document.getElementsByClassName('difficulty-selection').item(0).remove()
         
         configDiff = getConfigDiffculty(diff)
-        headOptions()
-        initializeGame(configDiff)
+        container.append(initializeGame(configDiff))
+        container.innerHTML += headOptions()
         timeCounterID = startTimeCounter()
         state = 'PLAYING'
 
@@ -63,6 +63,7 @@ container.addEventListener('mousedown', event => {
             // Si se ha completado el juego
             if (gameBoard.gameCompleted()){
                 stopTimeCounter(timeCounterID)
+                renderer.showRemainingMinesAsFlags()
                 state = 'GAMEOVER'
                 let successMsg = `You have finished the game! Time: ${time} seconds.`
 
@@ -89,8 +90,9 @@ container.addEventListener('mousedown', event => {
     if (target.classList.contains('btn-restart')){
         if (confirmRestart()){
             bestTime = getBestScoreTimeByDiff(diff)
-            headOptions()
-            initializeGame(configDiff)
+            // Eliminamos y volvemos a crear el tablero
+            document.getElementsByClassName('board-game').item(0).remove()
+            container.append(initializeGame(configDiff))
             stopTimeCounter(timeCounterID)
             timeCounterID = startTimeCounter()
             state = 'PLAYING'
@@ -101,19 +103,29 @@ container.addEventListener('mousedown', event => {
     if (target.classList.contains('btn-change-diff')){
         if (confirmRestart()){
             stopTimeCounter(timeCounterID)
-            prepareMenu()
+            container.innerHTML = prepareMenu()
             container.style.gridTemplateColumns = '1fr' // Vuelvo a establecer una fila
         }
     }
 })
 
 function prepareMenu(){
-    container.innerHTML = `
+    // container.innerHTML = 
+    return `
         <div class="difficulty-selection">
             <h3>Select difficulty</h3>
-            <button class="btn-difficulty" data-level="easy">Easy</button>
-            <button class="btn-difficulty" data-level="medium">Medium</button>
-            <button class="btn-difficulty" data-level="hard">Hard</button>
+            <button class="btn-difficulty" data-level="easy">
+                Easy <br>
+                8x8 - 10 mines
+            </button>
+            <button class="btn-difficulty" data-level="medium">
+                Medium <br>
+                16x16 - 40 mines
+            </button>
+            <button class="btn-difficulty" data-level="hard">
+                Hard <br>
+                30x16 - 99 mines
+            </button>
         </div>
     `
 }
@@ -131,11 +143,11 @@ function initializeGame(configDiff){
     gameBoard = new GameBoard(configDiff.rows, configDiff.cols)
     gameBoard.setRandomMines(configDiff.mines)
     renderer = new Render(gameBoard)
-    container.append(renderer.renderBoard())
+    return renderer.renderBoard()
 }
 
 function headOptions(){
-    container.innerHTML = `
+    return `
         <div class="head-options">
             <button class="btn-restart">Restart</button>
             <button class="btn-change-diff">Change difficulty</button>

@@ -5,6 +5,10 @@ export class Render{
         this.#gameBoard = gameBoard
     }
 
+    #getCell(i, j){
+        return document.getElementById(`${i}-${j}`)
+    }
+
     // Renderizado de tablero
     renderBoard(){
         const board = document.createElement('div')
@@ -31,7 +35,7 @@ export class Render{
         let cell
         this.#gameBoard.board.forEach((row, i) => row.forEach( (box, j) => {
             if (box.revealed){
-                cell = document.getElementById(`${i}-${j}`)
+                cell = this.#getCell(i, j)
                 cell.textContent = box.nearby_mines
                 cell.classList.add(`bombs-${box.nearby_mines}`)
             }
@@ -39,7 +43,7 @@ export class Render{
     }
 
     switchFlagCellIn(i, j){
-        const cell = document.getElementById(`${i}-${j}`)
+        const cell = this.#getCell(i, j)
         const box = this.#gameBoard.getBoxIn(i, j)
         // Si tiene bandera
         if (box.flag){
@@ -52,8 +56,9 @@ export class Render{
 
     // Muestra todas las minas del tablero y aquellas flags marcadas incorrectamente
     showAllMines(){
+        let cell
         this.#gameBoard.board.forEach((row, i) => row.forEach( (box, j) => {
-            let cell = document.getElementById(`${i}-${j}`)
+            cell = this.#getCell(i, j)
             if (box.is_mine && !box.flag){ // Mina revelada
                 cell.classList.add('bomb')
             }else if (box.flag && !box.is_mine){ // Banderas incorrectas
@@ -62,8 +67,19 @@ export class Render{
         }))
     }
 
+    // Muestra todas las minas como flags. Usada para cuando el usuario gana la partida y quedan minas por marcar
+    showRemainingMinesAsFlags(){
+        let cell
+        this.#gameBoard.board.forEach((row, i) => row.forEach( (box, j) => {
+            cell = this.#getCell(i, j)
+            if (box.is_mine && !box.revealed){
+                cell.classList.add('flag')
+            }
+        }))
+    }
+
     highlightMine(i, j){
-        let cell = document.getElementById(`${i}-${j}`)
+        let cell = this.#getCell(i, j)
         cell.classList.add('highlighted')
     }
 
